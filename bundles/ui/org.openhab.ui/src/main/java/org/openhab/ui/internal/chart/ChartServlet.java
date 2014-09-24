@@ -154,7 +154,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		logger.debug("Received incoming chart request: ", req);
+		logger.debug("+Received incoming chart request: ", req);
 
 		int width = defaultWidth;
 
@@ -211,7 +211,10 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 				throw new ServletException("Begin and end must have this format: " + dateFormat + ".");
 			}
 		}
-
+		
+		String theme;
+		theme = req.getParameter("theme");
+		logger.debug("Theme specified: " + theme);				
 
 		//Set begin and end time and check legality.		
 		if (timeBegin == null && timeEnd == null) {
@@ -242,7 +245,7 @@ public class ChartServlet extends HttpServlet implements ManagedService {
 		// Set the content type to that provided by the chart provider
 		res.setContentType("image/" + provider.getChartType());
 		try {
-			BufferedImage chart = provider.createChart(serviceName, null, timeBegin, timeEnd, height, width,
+			BufferedImage chart = provider.createChart(serviceName, theme, timeBegin, timeEnd, height, width,
 					req.getParameter("items"), req.getParameter("groups"));
 			ImageIO.write(chart, provider.getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {

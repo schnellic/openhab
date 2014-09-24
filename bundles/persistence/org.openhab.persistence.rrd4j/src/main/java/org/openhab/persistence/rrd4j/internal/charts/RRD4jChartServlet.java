@@ -11,6 +11,7 @@ package org.openhab.persistence.rrd4j.internal.charts;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.rrd4j.graph.RrdGraph;
 import org.rrd4j.graph.RrdGraphDef;
+import org.rrd4j.graph.RrdGraphDefTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,8 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	/** the URI of this servlet */
 	public static final String SERVLET_NAME = "/rrdchart.png";
 
+	protected final static String RRD4J_FOLDER = "./etc/rrd4j";
+	
 	protected static final Color[] LINECOLORS = new Color[] { 
 		Color.RED, Color.GREEN, Color.BLUE, 
 		Color.MAGENTA, Color.ORANGE, Color.CYAN, 
@@ -140,6 +144,13 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 			height = Integer.parseInt(req.getParameter("h"));
 		} catch (Exception e) {
 		}
+		
+		String theme = null;
+		try {
+			theme = req.getParameter("theme");
+		} catch (Exception e) {
+		}
+		
 		Long period = PERIODS.get(req.getParameter("period"));
 		if (period == null) {
 			// use a day as the default period
@@ -152,7 +163,8 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		// Set the content type to that provided by the chart provider
 		res.setContentType("image/"+getChartType());
 		try {
-			BufferedImage chart = createChart(null, null, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
+			BufferedImage chart = createChart(null, theme, timeBegin, timeEnd, height, width, req.getParameter("items"), req.getParameter("groups"));
+			
 			ImageIO.write(chart, getChartType().toString(), res.getOutputStream());
 		} catch (ItemNotFoundException e) {
 			logger.debug("Item not found error while generating chart.");
@@ -177,11 +189,11 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 		}
 		if(item instanceof NumberItem) {
 			// we only draw a line
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), RRD4J_FOLDER + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
 			graphDef.line(Integer.toString(counter), color, label, 2);
 		} else {
 			// we draw a line and fill the area beneath it with a transparent color
-			graphDef.datasource(Integer.toString(counter), "./etc/rrd4j/" + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
+			graphDef.datasource(Integer.toString(counter), RRD4J_FOLDER + item.getName() + ".rrd", "state", RRD4jService.getConsolidationFunction(item));
 			Color areaColor = AREACOLORS[counter%LINECOLORS.length];
 			
 			graphDef.area(Integer.toString(counter), areaColor);
@@ -237,46 +249,65 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 	@Override
 	public BufferedImage createChart(String service, String theme, Date startTime, Date endTime, int height, int width,
 			String items, String groups) throws ItemNotFoundException {
-		RrdGraphDef graphDef = new RrdGraphDef();
-
-		long period = (startTime.getTime() - endTime.getTime()) / 1000;
 		
-		graphDef.setWidth(width);
-		graphDef.setHeight(height);
-		graphDef.setAntiAliasing(true);
-		graphDef.setImageFormat("PNG");
-		graphDef.setStartTime(period);
-		graphDef.setTextAntiAliasing(true);
-		graphDef.setLargeFont(new Font("SansSerif", Font.PLAIN, 15));
-		graphDef.setSmallFont(new Font("SansSerif", Font.PLAIN, 11));
+	
+		logger.debug("Creating Chart: theme={}", theme);
+		RrdGraphDef graphDef = null;
 		
-		int seriesCounter = 0;
-
-		// Loop through all the items
-		if (items != null) {
-			String[] itemNames = items.split(",");
-			for (String itemName : itemNames) {
-				Item item = itemUIRegistry.getItem(itemName);
-				addLine(graphDef, item, seriesCounter++);
+		if (theme != null) {
+			try {
+				RrdGraphDefTemplate t = new RrdGraphDefTemplate(new File(RRD4J_FOLDER + File.separator + theme + ".xml"));
+				graphDef = t.getRrdGraphDef();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			
+		} 
+		logger.debug("Creating Chart: theme={}", graphDef.toString());
+		
+		if (graphDef == null) { 
+		
+			graphDef = new RrdGraphDef();
+	
+			long period = (startTime.getTime() - endTime.getTime()) / 1000;
+			
+			graphDef.setWidth(width);
+			graphDef.setHeight(height);
+			graphDef.setAntiAliasing(true);
+			graphDef.setImageFormat("PNG");
+			graphDef.setStartTime(period);
+			graphDef.setTextAntiAliasing(true);
+			graphDef.setLargeFont(new Font("SansSerif", Font.PLAIN, 15));
+			graphDef.setSmallFont(new Font("SansSerif", Font.PLAIN, 11));
+		
+			int seriesCounter = 0;
+	
+			// Loop through all the items
+			if (items != null) {
+				String[] itemNames = items.split(",");
+				for (String itemName : itemNames) {
+					Item item = itemUIRegistry.getItem(itemName);
+					addLine(graphDef, item, seriesCounter++);
+				}
 			}
-		}
-
-		// Loop through all the groups and add each item from each group
-		if (groups != null) {
-			String[] groupNames = groups.split(",");
-			for (String groupName : groupNames) {
-				Item item = itemUIRegistry.getItem(groupName);
-				if (item instanceof GroupItem) {
-					GroupItem groupItem = (GroupItem) item;
-					for (Item member : groupItem.getMembers()) {
-						addLine(graphDef, member, seriesCounter++);
+	
+			// Loop through all the groups and add each item from each group
+			if (groups != null) {
+				String[] groupNames = groups.split(",");
+				for (String groupName : groupNames) {
+					Item item = itemUIRegistry.getItem(groupName);
+					if (item instanceof GroupItem) {
+						GroupItem groupItem = (GroupItem) item;
+						for (Item member : groupItem.getMembers()) {
+							addLine(graphDef, member, seriesCounter++);
+						}
+					} else {
+						throw new ItemNotFoundException("Item '" + item.getName() + "' defined in groups is not a group.");
 					}
-				} else {
-					throw new ItemNotFoundException("Item '" + item.getName() + "' defined in groups is not a group.");
 				}
 			}
 		}
-
 		// Write the chart as a PNG image
 		RrdGraph graph;
 		try {
@@ -286,6 +317,7 @@ public class RRD4jChartServlet implements Servlet, ChartProvider {
 			
 			return bi;
 		} catch (IOException e) {
+			e.printStackTrace();
 			logger.error("Error generating graph: {}", e);
 		}
 		
