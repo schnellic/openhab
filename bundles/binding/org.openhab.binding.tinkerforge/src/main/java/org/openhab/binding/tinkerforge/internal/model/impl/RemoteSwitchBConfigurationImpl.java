@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -35,7 +35,7 @@ import org.openhab.binding.tinkerforge.internal.model.RemoteSwitchBConfiguration
  *
  * @generated
  */
-public class RemoteSwitchBConfigurationImpl extends MinimalEObjectImpl.Container implements RemoteSwitchBConfiguration
+public class RemoteSwitchBConfigurationImpl extends DimmableConfigurationImpl implements RemoteSwitchBConfiguration
 {
   /**
    * The default value of the '{@link #getAddress() <em>Address</em>}' attribute.

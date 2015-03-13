@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -40,7 +40,7 @@ import org.openhab.binding.tinkerforge.internal.model.TFServoConfiguration;
  *
  * @generated
  */
-public class TFServoConfigurationImpl extends MinimalEObjectImpl.Container implements TFServoConfiguration
+public class TFServoConfigurationImpl extends DimmableConfigurationImpl implements TFServoConfiguration
 {
   /**
    * The default value of the '{@link #getVelocity() <em>Velocity</em>}' attribute.

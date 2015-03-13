@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -78,6 +78,96 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   MBrickd createMBrickd();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Dual Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Dual Button</em>'.
+   * @generated
+   */
+  MBrickletDualButton createMBrickletDualButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Left Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Left Button</em>'.
+   * @generated
+   */
+  DualButtonLeftButton createDualButtonLeftButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Right Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Right Button</em>'.
+   * @generated
+   */
+  DualButtonRightButton createDualButtonRightButton();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Left Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Left Led</em>'.
+   * @generated
+   */
+  DualButtonLeftLed createDualButtonLeftLed();
+
+  /**
+   * Returns a new object of class '<em>Dual Button Right Led</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dual Button Right Led</em>'.
+   * @generated
+   */
+  DualButtonRightLed createDualButtonRightLed();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Linear Poti</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Linear Poti</em>'.
+   * @generated
+   */
+  MBrickletLinearPoti createMBrickletLinearPoti();
+
+  /**
+   * Returns a new object of class '<em>MBricklet Joystick</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>MBricklet Joystick</em>'.
+   * @generated
+   */
+  MBrickletJoystick createMBrickletJoystick();
+
+  /**
+   * Returns a new object of class '<em>Joystick XPosition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick XPosition</em>'.
+   * @generated
+   */
+  JoystickXPosition createJoystickXPosition();
+
+  /**
+   * Returns a new object of class '<em>Joystick YPosition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick YPosition</em>'.
+   * @generated
+   */
+  JoystickYPosition createJoystickYPosition();
+
+  /**
+   * Returns a new object of class '<em>Joystick Button</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Joystick Button</em>'.
+   * @generated
+   */
+  JoystickButton createJoystickButton();
 
   /**
    * Returns a new object of class '<em>MBrick Servo</em>'.
@@ -438,6 +528,15 @@ public interface ModelFactory extends EFactory
    * @generated
    */
   BrickletMultiTouchConfiguration createBrickletMultiTouchConfiguration();
+
+  /**
+   * Returns a new object of class '<em>Dimmable Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Dimmable Configuration</em>'.
+   * @generated
+   */
+  DimmableConfiguration createDimmableConfiguration();
 
   /**
    * Returns a new object of class '<em>MServo</em>'.

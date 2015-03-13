@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -108,6 +108,10 @@ public class HeatPumpGenericBindingProvider extends AbstractGenericBindingProvid
 		}
 		return itemNames.toArray(new String[itemNames.size()]);
 	}
+	
+	public HeatPumpBindingConfig getHeatPumpBindingConfig(String itemName){
+		return (HeatPumpBindingConfig)bindingConfigs.get(itemName);
+	}	
 	
 	
 	static class HeatPumpBindingConfig implements BindingConfig {

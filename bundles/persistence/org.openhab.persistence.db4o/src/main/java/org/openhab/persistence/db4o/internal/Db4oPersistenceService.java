@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2014, openHAB.org and others.
+ * Copyright (c) 2010-2015, openHAB.org and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -58,7 +58,8 @@ import com.db4o.query.Query;
 /**
  * This is a {@link PersistenceService} implementation using the db4o database.
  * 
- * @author Kai Kreuzer
+ * @author Kai Kreuzer - Initial Contribution
+ * @author Theo Weiss - get DB_FOLDER_NAME from property
  * @since 1.0.0
  */
 public class Db4oPersistenceService implements QueryablePersistenceService {
@@ -67,7 +68,7 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 	
 	private static final String SERVICE_NAME = "db4o";
 	
-	private static final String DB_FOLDER_NAME = "etc/db4o";
+  private static final String DB_FOLDER_NAME = getUserDataFolder() + File.separator + "db4o";
 	private static final String DB_FILE_NAME = "store.db4o";
 
 	private static final String SCHEDULER_GROUP = "DB4O_SchedulerGroup";
@@ -346,6 +347,14 @@ public class Db4oPersistenceService implements QueryablePersistenceService {
 		}
 		
 	}
-	
+
+	static private String getUserDataFolder() {
+		String progArg = System.getProperty("openhab.userdata");
+		if (progArg != null) {
+			return progArg + File.separator + "persistence";
+		} else {
+			return "etc";
+		}
+	}
 
 }
